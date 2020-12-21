@@ -97,14 +97,21 @@ ClientTools_02 | Format-Table
 New-Item -path alias:kubectl -value 'C:\ProgramData\chocolatey\lib\kubernetes-cli\tools\kubernetes\client\bin\kubectl.exe'
 New-Item -path alias:azdata -value 'C:\Program Files (x86)\Microsoft SDKs\Azdata\CLI\wbin\azdata.cmd'
 
+#Enable Autologon
+$AutoLogonRegPath = "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon"
+Set-ItemProperty -Path $AutoLogonRegPath -Name "AutoAdminLogon" -Value "1" -type String 
+Set-ItemProperty -Path $AutoLogonRegPath -Name "DefaultUsername" -Value "$($env:ComputerName)\$($adminUsername)" -type String  
+Set-ItemProperty -Path $AutoLogonRegPath -Name "DefaultPassword" -Value "ARCPassword123!!" -type String
+Set-ItemProperty -Path $AutoLogonRegPath -Name "AutoLogonCount" -Value "1" -type DWord
+
 # Creating PowerShell Logon Script
 $LogonScript = @'
 Start-Transcript -Path C:\tmp\LogonScript.log
 
 $azurePassword = ConvertTo-SecureString $env:servicePrincipalClientSecret -AsPlainText -Force
-$psCred = New-Object System.Management.Automation.PSCredential($env:servicePrincipalClientId , $azurePassword)
-Connect-AzAccount -Credential $psCred -TenantId $env:tenantId -ServicePrincipal
-Import-AzAksCredential -ResourceGroupName $env:resourceGroup -Name $env:clusterName -Force
+$psCred = New-Object System.Management.Automation.PSCredential($($env:servicePrincipalClientId) , $($azurePassword))
+Connect-AzAccount -Credential $psCred -TenantId $($env:tenantId) -ServicePrincipal
+Import-AzAksCredential -ResourceGroupName $($env:resourceGroup) -Name $($env:clusterName) -Force
 
 kubectl get nodes
 azdata --version
@@ -116,8 +123,8 @@ $env:argument1="--install-extension"
 $env:argument2="Microsoft.arc"
 $env:argument3="microsoft.azuredatastudio-postgresql"
 
-& "C:\Program Files\Azure Data Studio\bin\azuredatastudio.cmd" $env:argument1 $env:argument2
-& "C:\Program Files\Azure Data Studio\bin\azuredatastudio.cmd" $env:argument1 $env:argument3
+& "C:\Program Files\Azure Data Studio\bin\azuredatastudio.cmd" $($env:argument1) $($env:argument2)
+& "C:\Program Files\Azure Data Studio\bin\azuredatastudio.cmd" $($env:argument1) $($env:argument3)
 
 Write-Host "Copying Azure Data Studio Settings Config"
 $SettingsDestination = "C:\Users\$env:adminUsername\AppData\Roaming\azuredatastudio\User"
@@ -142,16 +149,16 @@ if(($env:DOCKER_REGISTRY -ne $NULL) -or ($env:DOCKER_REGISTRY -ne ""))
 {
     azdata arc dc config replace --path ./custom/control.json --json-values "spec.docker.registry=$env:DOCKER_REGISTRY"
 }
-if(($env:DOCKER_REPOSITORY -ne $NULL) -or ($env:DOCKER_REPOSITORY -ne ""))
+if(($($env:DOCKER_REPOSITORY) -ne $NULL) -or ($($env:DOCKER_REPOSITORY) -ne ""))
 {
     azdata arc dc config replace --path ./custom/control.json --json-values "spec.docker.repository=$env:DOCKER_REPOSITORY"
 }
-if(($env:DOCKER_TAG -ne $NULL) -or ($env:DOCKER_TAG -ne ""))
+if(($($env:DOCKER_TAG) -ne $NULL) -or ($($env:DOCKER_TAG) -ne ""))
 {
     azdata arc dc config replace --path ./custom/control.json --json-values "spec.docker.imageTag=$env:DOCKER_TAG"
 }
 
-azdata arc dc create --namespace $env:ARC_DC_NAME --name $env:ARC_DC_NAME --subscription $env:ARC_DC_SUBSCRIPTION --resource-group $env:resourceGroup --location $env:ARC_DC_REGION --connectivity-mode indirect --path ./custom
+azdata arc dc create --namespace $($env:ARC_DC_NAME) --name $($env:ARC_DC_NAME) --subscription $($env:ARC_DC_SUBSCRIPTION) --resource-group $($env:resourceGroup) --location $($env:ARC_DC_REGION) --connectivity-mode direct --path ./custom
 
 Unregister-ScheduledTask -TaskName "LogonScript" -Confirm:$false
 
@@ -160,10 +167,13 @@ Stop-Transcript
 Stop-Process -name powershell -Force
 '@ > C:\tmp\LogonScript.ps1
 
+
+$User= "$($env:ComputerName)\$($adminUsername)"
 # Creating LogonScript Windows Scheduled Task
 $Trigger = New-ScheduledTaskTrigger -AtLogOn
 $Action = New-ScheduledTaskAction -Execute "PowerShell.exe" -Argument 'C:\tmp\LogonScript.ps1'
-Register-ScheduledTask -TaskName "LogonScript" -Trigger $Trigger -User $adminUsername -Action $Action -RunLevel "Highest" -Force
+Register-ScheduledTask -TaskName "LogonScript" -Trigger $Trigger -User $User -Action $Action -RunLevel "Highest" -Force
 
+Restart-Computer -Force
 # Disabling Windows Server Manager Scheduled Task
 #Get-ScheduledTask -TaskName ServerManager | Disable-ScheduledTask
