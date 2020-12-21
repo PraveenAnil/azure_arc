@@ -166,4 +166,4 @@ $Action = New-ScheduledTaskAction -Execute "PowerShell.exe" -Argument 'C:\tmp\Lo
 Register-ScheduledTask -TaskName "LogonScript" -Trigger $Trigger -User $adminUsername -Action $Action -RunLevel "Highest" -Force
 
 # Disabling Windows Server Manager Scheduled Task
-Get-ScheduledTask -TaskName ServerManager | Disable-ScheduledTask
+#Get-ScheduledTask -TaskName ServerManager | Disable-ScheduledTask
