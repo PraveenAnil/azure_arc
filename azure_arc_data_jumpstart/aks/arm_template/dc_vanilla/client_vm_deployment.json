@@ -359,7 +359,7 @@
             "type": "string",
             "value": "[parameters('adminUsername')]"
         },
-        "Jump VM DNS": {
+        "jumpvmdns": {
       "type": "string",
       "value": "[reference(resourceId('Microsoft.Network/publicIPAddresses',variables('publicIpAddressName'))).dnsSettings.fqdn]"
     }
