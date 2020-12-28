@@ -78,7 +78,13 @@ workflow ClientTools_01
                 }
         }
 
-ClientTools_01 | Format-Table
+#ClientTools_01 | Format-Table
+
+
+        Invoke-WebRequest "https://raw.githubusercontent.com/microsoft/azure_arc/main/azure_arc_data_jumpstart/aks/arm_template/dc_vanilla/settings.json" -OutFile "C:\tmp\settings.json"
+        Invoke-WebRequest "https://raw.githubusercontent.com/microsoft/azure_arc/main/azure_arc_data_jumpstart/aks/arm_template/dc_vanilla/scripts/DC_Cleanup.ps1" -OutFile "C:\tmp\DC_Cleanup.ps1"
+        Invoke-WebRequest "https://raw.githubusercontent.com/microsoft/azure_arc/main/azure_arc_data_jumpstart/aks/arm_template/dc_vanilla/scripts/DC_Deploy.ps1" -OutFile "C:\tmp\DC_Deploy.ps1"
+               
 
 workflow ClientTools_02
         {
@@ -92,7 +98,7 @@ workflow ClientTools_02
             }
         }
         
-ClientTools_02 | Format-Table 
+#ClientTools_02 | Format-Table 
 
 New-Item -path alias:kubectl -value 'C:\ProgramData\chocolatey\lib\kubernetes-cli\tools\kubernetes\client\bin\kubectl.exe'
 New-Item -path alias:azdata -value 'C:\Program Files (x86)\Microsoft SDKs\Azdata\CLI\wbin\azdata.cmd'
@@ -116,31 +122,6 @@ Import-AzAksCredential -ResourceGroupName $($env:resourceGroup) -Name $($env:clu
 kubectl get nodes
 azdata --version
 
-Write-Host "Installing Azure Data Studio Extensions"
-Write-Host "`n"
-
-$env:argument1="--install-extension"
-$env:argument2="Microsoft.arc"
-$env:argument3="microsoft.azuredatastudio-postgresql"
-
-& "C:\Program Files\Azure Data Studio\bin\azuredatastudio.cmd" $($env:argument1) $($env:argument2)
-& "C:\Program Files\Azure Data Studio\bin\azuredatastudio.cmd" $($env:argument1) $($env:argument3)
-
-Write-Host "Copying Azure Data Studio Settings Config"
-$SettingsDestination = "C:\Users\$env:adminUsername\AppData\Roaming\azuredatastudio\User"
-Start-Process -FilePath "C:\Program Files\Azure Data Studio\azuredatastudio.exe" -WindowStyle Hidden
-Start-Sleep -s 5
-Stop-Process -Name "azuredatastudio" -Force
-Copy-Item -Path "C:\tmp\settings.json" -Destination $SettingsDestination -Recurse -Force -ErrorAction Continue
-
-Write-Host "Creating Azure Data Studio Desktop shortcut"
-Write-Host "`n"
-$TargetFile = "C:\Program Files\Azure Data Studio\azuredatastudio.exe"
-$ShortcutFile = "C:\Users\$env:adminUsername\Desktop\Azure Data Studio.lnk"
-$WScriptShell = New-Object -ComObject WScript.Shell
-$Shortcut = $WScriptShell.CreateShortcut($ShortcutFile)
-$Shortcut.TargetPath = $TargetFile
-$Shortcut.Save()
 
 # Deploying Azure Arc Data Controller
 start PowerShell {for (0 -lt 1) {kubectl get pod -n $env:ARC_DC_NAME; sleep 5; clear }}
