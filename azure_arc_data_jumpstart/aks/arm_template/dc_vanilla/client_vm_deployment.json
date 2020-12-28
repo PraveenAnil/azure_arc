@@ -300,18 +300,18 @@
                     "osDisk": {
                         "name": "[concat(variables('vmName'),'-OSDisk')]",
                         "caching": "ReadWrite",
-                        "createOption": "fromImage",
+                        "createOption": "FromImage",
                         "managedDisk": {
                             "storageAccountType": "[variables('osDiskType')]"
-                        }
+                        },
+                        "diskSizeGB": 128
                     },
                     "imageReference": {
-                        "publisher": "MicrosoftWindowsServer",
-                        "offer": "WindowsServer",
-                        "sku": "[parameters('windowsOSVersion')]",
-                        "version": "latest"
-                    }
+                       "id": "/subscriptions/32db861e-a593-4eca-bf25-0d5f247b29df/resourceGroups/aec-mgmt-rg/providers/Microsoft.Compute/galleries/a01sig/images/arcdata/versions/1.0.0"
+                   }
                 },
+                
+                
                 "networkProfile": {
                     "networkInterfaces": [
                         {
