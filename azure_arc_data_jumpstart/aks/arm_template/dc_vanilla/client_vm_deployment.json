@@ -123,6 +123,9 @@
                 "description": "Arc Data Controller Region"
             }
         },
+        "Deployment_ID": {
+      "type": "string"
+    } ,
         "DOCKER_REGISTRY": {
             "type": "string",
             "metadata": {
@@ -278,7 +281,7 @@
                 "publicIPAddressVersion": "IPv4",
                 "idleTimeoutInMinutes": 4,
                  "dnsSettings": {
-          "domainNameLabel": "[concat('arcdata',parameters('DeploymentID'))]"
+          "domainNameLabel": "[concat('arcdata',parameters('Deployment_ID'))]"
         }
             },
             "sku": {
