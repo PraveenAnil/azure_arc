@@ -307,7 +307,7 @@
                         "diskSizeGB": 128
                     },
                     "imageReference": {
-                       "id": "/subscriptions/32db861e-a593-4eca-bf25-0d5f247b29df/resourceGroups/aec-mgmt-rg/providers/Microsoft.Compute/galleries/a01sig/images/arcdata/versions/1.0.1"
+                       "id": "/subscriptions/32db861e-a593-4eca-bf25-0d5f247b29df/resourceGroups/aec-mgmt-rg/providers/Microsoft.Compute/galleries/a01sig/images/arcdata/versions/1.0.2"
                    }
                 },
                 
