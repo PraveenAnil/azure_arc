@@ -320,7 +320,6 @@
                     ]
                 },
                 "osProfile": {
-                    "computerName": "[variables('vmName')]",
                     "adminUsername": "[parameters('adminUsername')]",
                     "adminPassword": "[parameters('adminPassword')]"
                 }
