@@ -276,7 +276,10 @@
             "properties": {
                 "publicIpAllocationMethod": "Static",
                 "publicIPAddressVersion": "IPv4",
-                "idleTimeoutInMinutes": 4
+                "idleTimeoutInMinutes": 4,
+                 "dnsSettings": {
+          "domainNameLabel": "[concat('arcdata',parameters('DeploymentID'))]"
+        }
             },
             "sku": {
                 "name": "Basic",
@@ -353,9 +356,9 @@
             "type": "string",
             "value": "[parameters('adminUsername')]"
         },
-        "publicIP": {
-            "type": "string",
-            "value": "[concat(reference(variables('publicIPAddressName')).IpAddress)]"
-        }
+        "Jump VM DNS": {
+      "type": "string",
+      "value": "[reference(resourceId('Microsoft.Network/publicIPAddresses',variables('publicIpAddressName'))).dnsSettings.fqdn]"
+    }
     }
 }
