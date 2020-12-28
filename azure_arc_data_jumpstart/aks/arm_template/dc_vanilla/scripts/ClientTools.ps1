@@ -107,7 +107,7 @@ New-Item -path alias:azdata -value 'C:\Program Files (x86)\Microsoft SDKs\Azdata
 $AutoLogonRegPath = "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon"
 Set-ItemProperty -Path $AutoLogonRegPath -Name "AutoAdminLogon" -Value "1" -type String 
 Set-ItemProperty -Path $AutoLogonRegPath -Name "DefaultUsername" -Value "$($env:ComputerName)\$($adminUsername)" -type String  
-Set-ItemProperty -Path $AutoLogonRegPath -Name "DefaultPassword" -Value "ARCPassword123!!" -type String
+Set-ItemProperty -Path $AutoLogonRegPath -Name "DefaultPassword" -Value "ArcPassword123!!" -type String
 Set-ItemProperty -Path $AutoLogonRegPath -Name "AutoLogonCount" -Value "1" -type DWord
 
 # Creating PowerShell Logon Script
