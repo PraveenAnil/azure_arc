@@ -318,10 +318,6 @@
                             "id": "[resourceId('Microsoft.Network/networkInterfaces', variables('networkInterfaceName'))]"
                         }
                     ]
-                },
-                "osProfile": {
-                    "adminUsername": "[parameters('adminUsername')]",
-                    "adminPassword": "[parameters('adminPassword')]"
                 }
             }
         },
