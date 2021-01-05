@@ -27,6 +27,7 @@ param (
 [System.Environment]::SetEnvironmentVariable('SPN_CLIENT_ID', $servicePrincipalClientId,[System.EnvironmentVariableTarget]::Machine)
 [System.Environment]::SetEnvironmentVariable('SPN_CLIENT_SECRET', $servicePrincipalClientSecret,[System.EnvironmentVariableTarget]::Machine)
 [System.Environment]::SetEnvironmentVariable('SPN_TENANT_ID', $tenantId,[System.EnvironmentVariableTarget]::Machine)
+[System.Environment]::SetEnvironmentVariable('SPN_AUTHORITY', 'https://login.microsoftonline.com', [System.EnvironmentVariableTarget]::Machine)
 
 
 [System.Environment]::SetEnvironmentVariable('clusterName', $clusterName,[System.EnvironmentVariableTarget]::Machine)
