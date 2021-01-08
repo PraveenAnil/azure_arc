@@ -183,6 +183,31 @@
     },
     "resources": [
         {
+    "type": "Microsoft.Storage/storageAccounts",
+    "apiVersion": "2018-02-01",
+    "name": "[concat('arcstorage',parameters('DeploymentID'))]",
+    "location": "[resourceGroup().location]",
+      "sku": {
+      "name": "Standard_LRS"
+    },
+    "kind": "StorageV2",
+    "properties": {},
+    "resources": [
+        {
+            "type": "blobServices/containers",
+            "apiVersion": "2018-03-01-preview",
+            "name": "arccontainer",
+            "dependsOn": [
+                "[parameters('StorageAccountName')]"
+            ],
+            "properties": {
+                "publicAccess": "Container"
+            }
+        }
+        
+    ]
+}
+        {
             "type": "Microsoft.Network/networkInterfaces",
             "apiVersion": "2018-10-01",
             "name": "[variables('networkInterfaceName')]",
