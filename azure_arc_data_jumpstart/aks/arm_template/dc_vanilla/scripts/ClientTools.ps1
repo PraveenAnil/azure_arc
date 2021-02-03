@@ -167,9 +167,9 @@ if(($($env:DOCKER_TAG) -ne $NULL) -or ($($env:DOCKER_TAG) -ne ""))
     azdata arc dc config replace --path "C:\tmp\custom\control.json" --json-values "spec.docker.imageTag=$env:DOCKER_TAG"
 }
 
-kubectl delete arcpg12
-kubectl delete arcpg11
-kubectl delete arcsqlmi
+kubectl delete daemonset arcpg12
+kubectl delete daemonset arcpg11
+kubectl delete daemonset arcsqlmi
 
 azdata arc dc create --namespace $($env:ARC_DC_NAME) --name $($env:ARC_DC_NAME) --subscription $($env:ARC_DC_SUBSCRIPTION) --resource-group $($env:resourceGroup) --location $($env:ARC_DC_REGION) --connectivity-mode direct --path "C:\tmp\custom"
 
