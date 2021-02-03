@@ -131,6 +131,16 @@ Import-AzAksCredential -ResourceGroupName $($env:resourceGroup) -Name $($env:clu
 kubectl get nodes
 azdata --version
 
+$workspacename = "log" + $($env:clusterName)
+az login --service-principal -u $env:servicePrincipalClientId -p $env:servicePrincipalClientSecret --tenant $($env:tenantId)
+$createlog = $(az monitor log-analytics workspace create --resource-group $($env:resourceGroup) --workspace-name $workspacename)
+ 
+$getlogkey = az monitor log-analytics workspace get-shared-keys --resource-group $($env:resourceGroup) --workspace-name $workspacename)
+
+
+[System.Environment]::SetEnvironmentVariable('WORKSPACE_ID', $createlog.customerId,[System.EnvironmentVariableTarget]::Machine)
+[System.Environment]::SetEnvironmentVariable('WORKSPACE_SHARED_KEY', $getlogkey.primarySharedKey,[System.EnvironmentVariableTarget]::Machine)
+
 
 # Deploying Azure Arc Data Controller
 start PowerShell {for (0 -lt 1) {kubectl get pod -n $env:ARC_DC_NAME; sleep 5; clear }}
