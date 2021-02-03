@@ -140,7 +140,7 @@ kubectl create -f C:\tmp\imagepuller-pg12.yaml
 kubectl create -f C:\tmp\imagepuller-sqlmi.yaml
 
 
-$workspacename = "log" + $($env:clusterName)
+$workspacename = "log" + $($env:resourceGroup)
 az login --service-principal -u $env:servicePrincipalClientId -p $env:servicePrincipalClientSecret --tenant $($env:tenantId)
 $createlog = $(az monitor log-analytics workspace create --resource-group $($env:resourceGroup) --workspace-name $workspacename)
  
