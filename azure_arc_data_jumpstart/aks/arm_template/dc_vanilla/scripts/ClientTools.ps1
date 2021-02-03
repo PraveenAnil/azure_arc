@@ -144,7 +144,7 @@ $workspacename = "log" + $($env:clusterName)
 az login --service-principal -u $env:servicePrincipalClientId -p $env:servicePrincipalClientSecret --tenant $($env:tenantId)
 $createlog = $(az monitor log-analytics workspace create --resource-group $($env:resourceGroup) --workspace-name $workspacename)
  
-$getlogkey = az monitor log-analytics workspace get-shared-keys --resource-group $($env:resourceGroup) --workspace-name $workspacename)
+$getlogkey = $(az monitor log-analytics workspace get-shared-keys --resource-group $($env:resourceGroup) --workspace-name $workspacename)
 
 
 [System.Environment]::SetEnvironmentVariable('WORKSPACE_ID', $createlog.customerId,[System.EnvironmentVariableTarget]::Machine)
