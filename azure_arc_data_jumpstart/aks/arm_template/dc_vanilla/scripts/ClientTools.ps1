@@ -135,10 +135,6 @@ Import-AzAksCredential -ResourceGroupName $($env:resourceGroup) -Name $($env:clu
 kubectl get nodes
 azdata --version
 
-kubectl create -f C:\tmp\imagepuller-pg11.yaml
-kubectl create -f C:\tmp\imagepuller-pg12.yaml
-kubectl create -f C:\tmp\imagepuller-sqlmi.yaml
-
 
 $workspacename = "log" + $($env:resourceGroup)
 az login --service-principal -u $env:servicePrincipalClientId -p $env:servicePrincipalClientSecret --tenant $($env:tenantId)
@@ -171,16 +167,16 @@ if(($($env:DOCKER_TAG) -ne $NULL) -or ($($env:DOCKER_TAG) -ne ""))
 
 azdata arc dc create --namespace $($env:ARC_DC_NAME) --name $($env:ARC_DC_NAME) --subscription $($env:ARC_DC_SUBSCRIPTION) --resource-group $($env:resourceGroup) --location $($env:ARC_DC_REGION) --connectivity-mode direct --path "C:\tmp\custom"
 
-kubectl create -f C:\tmp\imagepuller-pg11.yaml -n $($env:ARC_DC_NAME)
-kubectl create -f C:\tmp\imagepuller-pg12.yaml -n $($env:ARC_DC_NAME)
-kubectl create -f C:\tmp\imagepuller-sqlmi.yaml -n $($env:ARC_DC_NAME)
+kubectl create -f C:\tmp\imagepuller-pg11.yaml 
+kubectl create -f C:\tmp\imagepuller-pg12.yaml 
+kubectl create -f C:\tmp\imagepuller-sqlmi.yaml 
 
 
 Unregister-ScheduledTask -TaskName "LogonScript" -Confirm:$false
 sleep 120
-kubectl delete daemonset arcpg12 -n $($env:ARC_DC_NAME)
-kubectl delete daemonset arcpg11 -n $($env:ARC_DC_NAME)
-kubectl delete daemonset arcsqlmi -n $($env:ARC_DC_NAME)
+kubectl delete daemonset arcpg12 
+kubectl delete daemonset arcpg11 
+kubectl delete daemonset arcsqlmi 
 
 Stop-Transcript
 
