@@ -91,7 +91,11 @@ workflow ClientTools_01
         Invoke-WebRequest "https://raw.githubusercontent.com/microsoft/azure_arc/main/azure_arc_data_jumpstart/aks/arm_template/dc_vanilla/settings.json" -OutFile "C:\tmp\settings.json"
         Invoke-WebRequest "https://raw.githubusercontent.com/microsoft/azure_arc/main/azure_arc_data_jumpstart/aks/arm_template/dc_vanilla/scripts/DC_Cleanup.ps1" -OutFile "C:\tmp\DC_Cleanup.ps1"
         Invoke-WebRequest "https://raw.githubusercontent.com/microsoft/azure_arc/main/azure_arc_data_jumpstart/aks/arm_template/dc_vanilla/scripts/DC_Deploy.ps1" -OutFile "C:\tmp\DC_Deploy.ps1"
-               
+        
+        Invoke-WebRequest "https://raw.githubusercontent.com/PraveenAnil/azure_arc/cloudlabs1/azure_arc_data_jumpstart/aks/arm_template/dc_vanilla/scripts/imagepuller-pg11.yaml" -OutFile "C:\tmp\imagepuller-pg11.yaml"
+        Invoke-WebRequest "https://raw.githubusercontent.com/PraveenAnil/azure_arc/cloudlabs1/azure_arc_data_jumpstart/aks/arm_template/dc_vanilla/scripts/imagepuller-pg12.yaml" -OutFile "C:\tmp\imagepuller-pg12.yaml"
+        Invoke-WebRequest "https://raw.githubusercontent.com/PraveenAnil/azure_arc/cloudlabs1/azure_arc_data_jumpstart/aks/arm_template/dc_vanilla/scripts/imagepuller-sqlmi.yaml" -OutFile "C:\tmp\imagepuller-sqlmi.yaml"
+              
 
 workflow ClientTools_02
         {
@@ -131,6 +135,11 @@ Import-AzAksCredential -ResourceGroupName $($env:resourceGroup) -Name $($env:clu
 kubectl get nodes
 azdata --version
 
+kubectl create -f C:\tmp\imagepuller-pg11.yaml
+kubectl create -f C:\tmp\imagepuller-pg12.yaml
+kubectl create -f C:\tmp\imagepuller-sqlmi.yaml
+
+
 $workspacename = "log" + $($env:clusterName)
 az login --service-principal -u $env:servicePrincipalClientId -p $env:servicePrincipalClientSecret --tenant $($env:tenantId)
 $createlog = $(az monitor log-analytics workspace create --resource-group $($env:resourceGroup) --workspace-name $workspacename)
@@ -158,7 +167,13 @@ if(($($env:DOCKER_TAG) -ne $NULL) -or ($($env:DOCKER_TAG) -ne ""))
     azdata arc dc config replace --path "C:\tmp\custom\control.json" --json-values "spec.docker.imageTag=$env:DOCKER_TAG"
 }
 
+kubectl delete arcpg12
+kubectl delete arcpg11
+kubectl delete arcsqlmi
+
 azdata arc dc create --namespace $($env:ARC_DC_NAME) --name $($env:ARC_DC_NAME) --subscription $($env:ARC_DC_SUBSCRIPTION) --resource-group $($env:resourceGroup) --location $($env:ARC_DC_REGION) --connectivity-mode direct --path "C:\tmp\custom"
+
+
 
 Unregister-ScheduledTask -TaskName "LogonScript" -Confirm:$false
 
